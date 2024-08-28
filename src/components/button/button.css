@@ -1,0 +1,26 @@
+.button--container {
+    width: 100%;
+    height: 64px;
+    /* background: var(--orange-500); */
+    color: var(--text);
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.button--container:hover {
+    filter: brightness(0.8);
+}
+
+.button--container.orange {
+    background: var(--orange-500);
+}
+
+.button--container.pink {
+    background: var(--pink-800);
+}
