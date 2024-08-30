@@ -1,8 +1,12 @@
 import { Status } from '../../components/status'
+import { useCycle } from '../../contexts/cycle'
+import { formatDistanceToNow } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 
 import styles from './history.module.css'
 
 export function HistoryPage() {
+    const { cycles } = useCycle()
 
     return (
         <div className={styles.container}>
@@ -18,30 +22,32 @@ export function HistoryPage() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Conserto de débitos técnicos</td>
-                        <td>25 minutos</td>
-                        <td>Há cerca de 2 meses</td>
-                        <td>
-                            <Status color="green">Concluido</Status>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Conserto de débitos técnicos</td>
-                        <td>25 minutos</td>
-                        <td>Há cerca de 2 meses</td>
-                        <td>
-                            <Status color="orange">Em andamento</Status>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Conserto de débitos técnicos</td>
-                        <td>25 minutos</td>
-                        <td>Há cerca de 2 meses</td>
-                        <td>
-                            <Status color="pink">Interrompido</Status>
-                        </td>
-                    </tr>
+                    {
+                        cycles.map(cycle => (
+                            <tr key={cycle.id}>
+                                <td>{cycle.task}</td>
+                                <td>{`${cycle.minutesAmount} ${cycle.minutesAmount > 1 ? 'minutos': 'minuto'}`}</td>
+                                <td>{formatDistanceToNow(new Date(cycle.startDate), {
+                                    addSuffix: true,
+                                    locale: ptBR
+                                })}</td>
+                                <td>
+
+                                    {
+                                        cycle.finishedDate && <Status color="green">Concluido</Status>
+                                    }
+                                    
+                                    {
+                                        cycle.interruptedDate && <Status color="pink">Interrompido</Status>
+                                    }
+
+                                    {
+                                        !cycle.finishedDate && !cycle.interruptedDate && <Status color="orange">Em andamento</Status>
+                                    }
+                                </td>
+                            </tr>
+                        ))
+                    }
                 </tbody>
             </table>
         </div>

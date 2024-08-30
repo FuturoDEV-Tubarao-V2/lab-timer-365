@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { differenceInSeconds } from 'date-fns'
+import { useCycle } from '../../contexts/cycle'
 
 import './timer.css'
 
-export function Timer({ activeCycle }) {
+export function Timer() {
 
+    const { activeCycle, markCurrentCycleAsFinished } = useCycle()
     const [amountSecondsPassed, setAmountSecondsPassed] = useState(() => {
         if(activeCycle) {
             // calc
@@ -26,6 +28,11 @@ export function Timer({ activeCycle }) {
     const minutes = String(minutesAmount).padStart(2, '0')
     const seconds = String(secondsAmount).padStart(2, '0')
 
+    function playSoundCountdown() {
+        const audio = new Audio("/audios/countdown.mp3")
+        audio.play()
+    }
+
     useEffect(() => {
         let intervalId;
 
@@ -36,6 +43,7 @@ export function Timer({ activeCycle }) {
                 if(secondsDifference >= totalSeconds) {
                     setAmountSecondsPassed(totalSeconds)
                     clearInterval(intervalId)
+                    markCurrentCycleAsFinished()
                 } else {
                     setAmountSecondsPassed(secondsDifference)
                 }
@@ -47,7 +55,17 @@ export function Timer({ activeCycle }) {
         }
     }, [activeCycle, totalSeconds])
 
+    useEffect(() => {
+        if(minutesAmount === 0 && secondsAmount === 3) {
+            playSoundCountdown()
+        }
+    }, [secondsAmount, minutesAmount])
     
+    useEffect(() => {
+        if(activeCycle) {
+            document.title = `${minutes}:${seconds} - ${activeCycle.task}`
+        }
+    }, [activeCycle, minutes, seconds])
 
     return (
         <div className='timer--container'>

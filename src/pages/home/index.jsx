@@ -5,15 +5,15 @@ import { Button } from '../../components/button'
 import { Timer } from '../../components/timer'
 import { NewCycle } from '../../components/new-cycle'
 
+import { useCycle } from '../../contexts/cycle'
+
 import './home.css'
-import { useState } from 'react'
 
 export function HomePage() {
 
-    const [cycles, setCycles] = useState([])
-    const [activeCycleId, setActiveCycleId] = useState(null)
+    const { createNewCycle, activeCycle, interruptedCurrentCycle } = useCycle()
 
-    const { register, handleSubmit } = useForm({
+    const { register, handleSubmit, watch } = useForm({
         defaultValues: {
             task: '',
             minutesAmount: 0,
@@ -25,45 +25,34 @@ export function HomePage() {
      * @param {String} data.task Nome da tarefa
      * @param {Number} data.minutesAmount Quantidade de minutos
     */
-    function onSubmit({ task, minutesAmount }) {
-        // id : string
-        // task: string
-        // minutesAmount: number
-        // startDate: Date
-        // interruptedDate?: Date | undefined
-        // finishedDate?: Date | undefined
-       const id = String(new Date().getTime())
-       
-       const newCycle = {
-            id,
-            task,
-            minutesAmount,
-            startDate: new Date()
-       }
-
-       setCycles([...cycles, newCycle])
-       setActiveCycleId(id)
+    function onSubmit(data) {
+        createNewCycle(data)
     }
 
-    const activeCycle = cycles.find(cycle => cycle.id === activeCycleId)
+    const task = watch('task')
+    const isDisabledForm = !task
 
     return (
         <form className='home--container' onSubmit={handleSubmit(onSubmit)}>
             {/* <input type="text" {...register('task')}/> */}
             <NewCycle register={register} />
 
-            <Timer activeCycle={activeCycle} />
+            <Timer />
 
             {
-                activeCycle ? (
-                    <Button variant='pink' type="button">
-                        <Hand size={24} />
-                        Interromper
-                    </Button>
-                ) : (
-                    <Button variant='orange' type="submit">
+                !activeCycle && (
+                    <Button type="submit" disabled={isDisabledForm}>
                         <Play size={24} />
                         Começar
+                    </Button>
+                )
+            }
+            
+            {
+                activeCycle && (
+                    <Button type="button" variant='pink' onClick={interruptedCurrentCycle}>
+                        <Hand size={24} />
+                        Interromper
                     </Button>
                 )
             }
