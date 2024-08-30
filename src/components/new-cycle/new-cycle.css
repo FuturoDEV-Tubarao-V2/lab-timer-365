@@ -28,3 +28,8 @@
 .new-cycle--container input[type="number"] {
     max-width: 72px;
 }
+
+.new-cycle--container input:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+}

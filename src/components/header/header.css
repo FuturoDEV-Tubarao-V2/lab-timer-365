@@ -22,3 +22,7 @@
 .header--container a:hover {
     color: var(--orange-500);
 }
+
+.header--container a.active {
+    color: var(--orange-500);
+}

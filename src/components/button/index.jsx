@@ -10,8 +10,8 @@ import './button.css'
  * @param {String} propriedades.variant Tipo de coloração do button
  * @returns 
  */
-export function Button({ children, variant = 'orange' }) {
-    return <button className={`button--container ${variant}`}>{children}</button>
+export function Button({ children, variant = 'orange', ...rest }) {
+    return <button className={`button--container ${variant}`} {...rest}>{children}</button>
 }
 
 Button.propTypes = {

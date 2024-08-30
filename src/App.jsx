@@ -1,11 +1,13 @@
-import { HomePage } from './pages/home'
-import { Template } from './templates'
+import { RouterProvider } from 'react-router-dom'
+import { routes } from './routes'
+import { CycleProvider } from './contexts/cycle'
+
 
 function App() {
   return (
-    <Template>
-      <HomePage />
-    </Template>
+    <CycleProvider>
+      <RouterProvider router={routes} />
+    </CycleProvider>
   )
 }
 
